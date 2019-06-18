@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="/static/css/materialize.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import jQuery Library-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <!--Import materialize.js-->
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+        <!-- CSS -->
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+          <!--Font-Awesome-->
+        <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,100,400italic,700italic,700|Roboto+Condensed|Slabo+27px|Felipa|Roboto+Slab|Lekton|Tangerine" rel="stylesheet">
+            <!--Custom css files-->
+            <link type="text/css" rel="stylesheet" href="/static/css/materialize.css" />
+     
+</head>
+<body>
+        <header>
+                <div class="navbar-fixed" style="opacity:0.8;">
+                    <nav class="nav-extended blue lighten-1" id="top">
+                        <div class="nav-wrapper">
+                            <a href="/" class="brand-logo"><img src="/static/images/iPal.jpeg" width="150" height="60"></a>
+                            <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons white-text">menu</i></a>
+                            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                                <li><a href="/" title="Home">Home</a></li>
+                                <li><a href="/services" title="Services">Services</a></li>
+                                <li><a href="/tutorials" title="Tutorials">Tutorials</a></li>
+                                {% if user.is_authenticated %}
+                                    <li><a href="/blog" title="Blog">Blog</a></li>
+                                    {% if user.is_helper %}
+                                        <li><a href="/accounts/user/{{user.id}}" title="Help"><i class="material-icons">accessible</i></a></li>
+                                    {% endif %}
+                                {% else %}
+                                    <li><a href="{% url 'login' %}" title="Login/Signup">Login/Signup</a></li>
+                                {% endif %}
+                                {% if user.user_company.has_robot %}
+                                    <li><a href="/api/v1/robot/admin/" title="{{user.user_company.robot_name}}"><i class="material-icons">child_care</i></a></li>
+                                    <li><a href="/api/v1/robot/train_view/" title="Train {{user.user_company.robot_name}}"><i class="material-icons">fitness_center</i></a></li>
+                                {% endif %}
+                                <li><a href="/about" title="About">About Us</a></li>
+                                <li><a href="/contact" title="Contact">Contact</a></li>
+                                  <!--<li><a href="/accounts/utils/prepare_roaster/" title="Utils">Utilities</a></li>-->
+                            </ul>
+                            <!--Mobile Nav-->
+                            <ul class="side-nav" id="mobile-demo">
+                                <li>
+                                    <div class="user-view">
+                                        <div class="background">
+                                            <img src="/static/images/learn_books-min.jpg" height="200px" width="100%">
+                                        </div>
+                                        {% if user.is_authenticated %}
+                                            {% if user.user_img %}
+                                                <a href="#"><img class="circle" src="{{user.user_img.url}}"></a>
+                                            {% else %}
+                                                <a href="#user"><img class="circle" src="/static/images/profile_placeholder.gif"></a>
+                                            {% endif %}
+                                            <a href="#name"><span class="red-text name"><b>{{user}}</b></span></a>
+                                            <a href="#email"><span class="red-text email"><b>{{user.email}}</b></span></a>
+                                            <a href="{% url 'logout' %}"><span class="red-text email"><b>logout</b></span></a>
+                                        {% else %}
+                                            <a href="#user"><img class="circle" src="/static/images/app_icon.png"></a>
+                                            <a href="#name"><span class="red-text name"><b>iPal Ghana Guest</b></span></a>
+                                            <a href="#email"><span class="red-text email"><b>Guest</b></span></a>
+                                            <a href="{% url 'login' %}"><span class="red-text email"><b>login</b></span></a>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                                <li><a href="/"><i class="material-icons red-text">home</i>Home</a></li>
+                                <li><a href="/courses"><i class="material-icons red-text">book</i>Courses</a></li>
+                                <li><a href="/courses/python/challenges/"><i class="material-icons red-text">school</i>Compete</a></li>
+                                <li><div class="divider"></div></li>
+                                <li><a href="/#apps"><i class="material-icons red-text">apps</i>Apps</a></li>
+                                {% if user.is_authenticated %}
+                                <!--<li class="no-padding">-->
+                                <ul class="collapsible" data-collapsible="accordion">
+                                    <li>
+                                        <div onclick="dropper()" class="collapsible-header red darken-3 active">
+                                            <i class="material-icons">account_circle</i>{{user}}
+                                            <i class="material-icons white-text right-align" id="drop">expand_less</i>
+                                        </div>
+                                        <div class="collapsible-body">
+                                            <ul>
+                                                {% if user.is_staff %}
+                                                    <li><a href="/accounts/dashboard/"><i class="material-icons red-text">lock</i>Dashboard</a></li>
+                                                {% endif %}
+                                                {% if user.user_company.has_robot %}
+                                                    <li><a href="/api/v1/robot/admin/"><i class="material-icons red-text">child_care</i>{{user.user_company.robot_name}}</a></li>
+                                                    <li><a href="/api/v1/robot/train_view/"><i class="material-icons red-text">fitness_center</i>Train {{user.user_company.robot_name}}</a></li>
+                                                {% endif %}
+                                                <li><a href="/accounts/logout/"><i class="material-icons red-text">lock</i>Logout</a></li>
+                                                <li><div class="divider"></div></li>
+                                                {% if user.is_helper %}
+                                                    <li><a href="/accounts/user/{{user.id}}" title="Help"><i class="material-icons red-text">accessible</i>Help</a></li>
+                                                {% endif %}
+                                             </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                                {% else %}
+                                    <li><a href="{% url 'login' %}"><i class="material-icons red-text">account_circle</i>Login/Signup</a></li>
+                                {% endif %}
+                                <li><a href="/accounts/utils/prepare_roaster/"><i class="material-icons red-text">event_available</i>iPal Ghana Utils</a></li>
+                                <li><a href="/forum/"><i class="material-icons red-text">comment</i>Forum</a></li>
+                                <li><div class="divider"></div></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+
+
+           
+            </header>
+            {% block content %}
+
+
+
+            {% endblock content %}
+                 <!--Footer starts here-->
+<footer class="page-footer blue lighten-1">
+    <div class="row">
+        <div class="row center-align">
+            <h5 class="black-text" style="padding:10px;"><u>About Us</u></h5>
+            <p class="orange-4" style="padding:10px;font-family: 'roboto', cursive;font-size:30px;"><b>We Are Your Friend In Technology</b></p>
+        </div>
+        <div class="row center-align">
+            <h5 class="blue lighten-1 black-text"><u>iPal</u></h5>
+            <ul>
+                <li><a class="grey-text text-lighten-3" href="https://www.facebook.com/iPalGhana/">Facebook</a></li>
+                <li><a class="grey-text text-lighten-3" href="https://github.com/TheoElia">Twitter</a></li>
+                <!--<li><a class="grey-text text-lighten-3" href="/products/create_product/">PyweAds</a></li>-->
+            </ul>
+        </div>
+        <div class="row center-align">
+            <h5 class="black-text"><u>Tutorials</u></h5>
+            <ul>
+                {% for course in courses %}
+              <li><a class="grey-text text-lighten-3" href="/courses/{{course.name}}">{{course.name}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="container">
+            <div class="row center-align">
+                <div class="col s12 m4 l3">
+                    <p>
+                        <a class="btn-floating deep-orange darken-4" href="https://www.instagram.com/pywedot_org/">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                    </p>
+                </div>
+                <div class="col s12 m6 l3">
+                    <p>
+                        <a href="https://www.facebook.com/iPalGhana/" class="btn-floating blue darken-1">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </p>
+                </div>
+                <div class="col s12 m6 l3">
+                    <p>
+                        <a class="btn-floating red">
+                            <i class="fa fa-youtube"></i>
+                        </a>
+                    </p>
+                </div>
+                <div class="col s12 m6 l3">
+                    <p>
+                        <a class="btn-floating blue">
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="col l6 m6 s12" style="padding:10px;font-size:12px;">&copy; 2019 <a class="white-text text-lighten-4" href="https://pywe.org/" target="_blank">iPal</a></div>
+        <br/>
+         <!-- <div class="col l6 m6 s12" style="padding:10px;font-size:12px;"><a class="grey-text text-lighten-4 right" href="https://pywe.org/" target="_blank">Designed By iPal</a></div> -->
+        <br/>
+       <div class="col l12 m6 s12" style="padding:10px;font-size:15px;"><a class="white-text text-lighten-4 right" href="https://firebase.google.com/official/site" target="_blank">Designed By: iPal</a></div>
+  
+    </div>
+  </footer>
+  
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $(".button-collapse").sideNav();
+        $('.fixed-action-btn').openFAB();
+        $('.fixed-action-btn').closeFAB();
+        //$(',parallax').parallax();
+        $('.collapsible').collapsible();
+        });
+    </script>
+
+</body>
+</html>
